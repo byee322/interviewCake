@@ -1,0 +1,61 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/react@17.0.2/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.13.12/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/jsx">
+      const {useState, useEffect} = React;
+
+      const App = props => {
+        const [rows, setRows] = useState([]);
+
+        useEffect(() => {
+          axios.get("https://api.mockaroo.com/api/0945f470?count=200&key=c7e34010").then((resp) => {
+            if(resp.status == 200){
+              setRows(resp.data);
+            }
+          })
+        },[]);
+
+        function filterData(e){
+          let newData = rows.slice();
+
+          let filter = e.target.dataset.filter;
+          let sorted = newData.sort((a,b)=>{
+            return ('' + a[filter]).localeCompare(b[filter]);
+          });
+          debugger;
+
+          console.log(sorted)
+          setRows(sorted);
+        }
+
+        function renderTable(data) {
+           const head = <thead><th>Country</th><th>City</th><th>State</th><th>Population</th><th>Children %</th></thead>;
+
+          const trs = rows.map((row) => {
+             const {country, state, population, children_pct, city} = row
+             return <tr><td onClick={(e)=>filterData(e)} onClick={filterData} data-filter="country">{country}</td><td onClick={filterData} data-filter="city">{city}</td><td onClick={filterData} data-filter="state">{state}</td><td onClick={filterData} data-filter="population">{population}</td><td onClick={filterData} data-filter="children_pct">{children_pct}</td></tr>;
+           })
+
+          return [head, trs]
+        }
+
+        return rows.length ? <table>{renderTable(rows)}</table> : null
+      }
+
+      ReactDOM.render(
+        <App />,
+        document.getElementById('root')
+      );
+    </script>
+  </body>
+</html>
+
+

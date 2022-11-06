@@ -1,0 +1,99 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+
+    <style>
+      body {
+        background-color: white;
+        color: black;
+        .head {
+          color: black;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/jsx">
+      const sampleTree = {
+        id: 'treeRoot',
+        children: [
+          {
+            id: 'mailboxes',
+            content: 'Mailboxes',
+            children: [{
+              id: 'personal',
+              content: 'Personal',
+              children: [{
+                id: 'family',
+                content: 'Family'
+              },{
+                id: 'friends',
+                content: 'Friends'
+              }]
+            },{
+              id: 'work',
+              content: 'Work'
+            }]
+          },
+          {
+            id: 'flagged',
+            content: 'Flagged',
+            children: [{
+              id: 'red',
+              content: 'Red'
+            },
+            {
+              id: 'orange',
+              content: 'Orange'
+            }]
+          }
+        ]
+      };
+
+      const TreeNode = ({ node }) => {
+        let tree
+        // should be optional chaining ?.
+        if(node.hasOwnProperty("children")){
+          tree = (<ul>
+              <li>{node.content}</li>
+              <ul>
+              {node.children.map(data => {
+                return <TreeNode node={data} />
+              })}
+              </ul>
+          </ul>)
+        }else {
+          tree = (<li>{node.content}</li>)
+        }
+
+        return tree
+      }
+
+      const Tree = ({ tree }) => {
+        return (
+          <ul className="head">
+            <li>{tree.content||tree.id}</li>
+             {tree.children.map(data => {
+              return <TreeNode node={data} />
+             })}
+          </ul>
+        )
+      }
+
+
+      const renderTree = (tree) => {
+        return <Tree tree={tree} />
+      }
+
+      ReactDOM.render(
+        renderTree(sampleTree),
+        document.getElementById('root')
+      );
+    </script>
+  </body>
+</html>

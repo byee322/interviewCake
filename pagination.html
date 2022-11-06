@@ -1,0 +1,99 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Pagination</title>
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/jsx">
+      //Instructions: Display users in a table and add pagination controls.
+      //  Try to use the useState hook.
+
+
+      // users should be displayed in paginated table
+      const users = [
+        {id: 1, name: 'Billy', role: 'Software Engineer'},
+        {id: 2, name: 'Jimmy', role: 'Secretary'},
+        {id: 3, name: 'Kate', role: 'Teacher'},
+        {id: 4, name: 'Sarah', role: 'Web Developer'},
+        {id: 5, name: 'Joe', role: 'Farmer'},
+        {id: 6, name: 'Tim', role: 'CEO'},
+        {id: 7, name: 'Adam', role: 'Mechanic'},
+        {id: 8, name: 'Sally', role: 'ECE'},
+        {id: 9, name: 'Amy', role: 'Doctor'},
+        {id: 10, name: 'Peter', role: 'Nurse'},
+        {id: 11, name: 'Robert', role: 'Chemical Engineer'},
+        {id: 12, name: 'Sally', role: 'Astronaut'},
+        {id: 13, name: 'Daniel', role: 'StartUp Founder'},
+        {id: 14, name: 'Ralphy', role: 'Nurse'},
+        {id: 15, name: 'Peter', role: 'Doctor'},
+      ]
+
+
+      // useState hook
+      const { useState } = React
+
+      function Table({users}){
+        const [page, setPage] = useState(0);
+
+        const perPage = 5;
+        const usersPerPageOffset = (page) * perPage;
+        const offSetUsers = users.slice(usersPerPageOffset, usersPerPageOffset + perPage)
+          return (
+            <>
+            <table>
+              <thead>
+                 <tr>
+                   <th>ID</th>
+                   <th>Name</th>
+                   <th>Role</th>
+                 </tr>
+               </thead>
+               <tbody>
+                 {offSetUsers && offSetUsers.map((user)=> {
+                  const {id, name, role} = user;
+                  return <tr>
+                     <td>{id}</td>
+                     <td>{name}</td>
+                     <td>{role}</td>
+                  </tr>
+                 })}
+               </tbody>
+            </table>
+
+            <ChangePage usersLength={users.length} perPage={perPage} setPage={setPage}/>
+            </>
+        )}
+
+      function ChangePage({usersLength, perPage, setPage}){
+        let changeButtons = []
+
+        for(let i=0; i < (usersLength / perPage);i++){
+          changeButtons.push(<button onClick={()=> {
+            setPage(i);
+          }}>{`Page ${i+1}`}</button>);
+        }
+        return changeButtons
+      }
+
+      function App(){
+
+        return (
+          <div>
+            <h1>Pagination</h1>
+            <Table users={users} />
+          </div>
+        )
+      }
+
+      ReactDOM.render(
+        <App />,
+        document.getElementById('root')
+      )
+    </script>
+  </body>
+</html>

@@ -1,0 +1,149 @@
+<!-- 
+React boilerplate for an app that pulls from https://message-list.appspot.com/. 
+Goal is to have the interviewee add a couple features like 
+  - changing sort order, 
+  - filtering results on the fly, 
+ - requesting more pages of messages, or
+ - updating the styling. -->
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+      <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.8.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.8.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+    <style>
+      .Author-img {
+        width: 40px;
+        height: 40px;
+      }
+      .Author-name {
+       margin: auto 25px auto 10px; 
+      }
+      .Message {
+        margin: 25px auto;
+      }
+      
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/jsx">
+      const { useState, useEffect } = React;
+      const baseUrl = 'https://message-list.appspot.com/';
+
+      const MessageList = ({ messages, filterText }) => {
+  
+        return <div className="Messages">
+          {messages.length ? messages.filter((message)=> {
+            if(message.content.includes(filterText)){
+              return true
+            }
+            return false
+           }).map( (message) => { 
+            return <div className="Message" key={message.id}> 
+              <div className="Author">
+                <img
+                  className="Author-img"
+                  src={baseUrl + message.author.photoUrl}
+                  alt={message.author.name}
+                />
+                <span className="Author-name">{message.author.name}</span>
+                <span className="Author-updated">{message.updated}</span>
+              </div>
+              <div className="Message-content">
+                {message.content}
+              </div>
+            </div> }) : null }  
+        </div>;
+      };
+
+      const App = () => {
+        const [messages, setMessages] = useState([]);
+        const [text, setFilterText] = useState("")
+
+        useEffect((messages) => {
+          axios.get(baseUrl + 'messages').then(response => setMessages(response.data.messages));
+          // Message Interface
+          // {
+          //   'id': message ID [integer]
+          //   'author': {
+          //       'name': name of the message author, [string]
+          //       'photoUrl': photo url of the message author, [string]
+          //   },
+          //   'updated': UTC timestamp of the messages creation time, [string]
+          //   'content': message content, [string]
+          // }
+        }, []);
+        
+        const SortMessages = ({setMessages, messages}) => {
+          function sortMessages(key1, key2){
+            const sortedMessages = messages.slice().sort((a,b) => {
+              if(key2){
+                if (a[key1][key2] < b[key1][key2]) {
+                  return -1;
+                }
+                if (a[key1][key2] > b[key1][key2]) {
+                  return 1;
+                }
+              }else {
+                
+                return new Date(b[key1]).getTime() - new Date(a[key1]).getTime()
+              }
+            }); 
+            console.log(sortedMessages)
+            setMessages(sortedMessages)
+          }
+          
+          return <div className="sort-button-container">
+            <button onClick={(e) => sortMessages("author", "name")}>Sort by Name</button>
+            <button onClick={(e) => sortMessages("updated")}>Sort by Date</button>
+          </div>
+        }
+        
+        const FilterMessages = ({setMessages, messages, setFilterText}) => {
+                 
+          function filterBy(value){
+           const filteredMessages = messages.filter((message)=> {
+            if(message.content.includes(value)){
+              return true
+            }
+            return false
+           })
+          
+           // setTimeout(()=>{
+           //  setMessages(filteredMessages)
+           // },1000)
+            
+            setFilterText(value)
+          }
+          
+          function changeInput(e){
+            const { value }  = e.currentTarget
+            console.log(value)
+            setFilterText(value)
+          }
+          
+          return <div className="filter-by-container">
+            <label>Filter by:</label>
+            <input onChange={(e) => {changeInput(e)}} value={text}/>
+          </div>
+        }
+        
+        
+        return <div>
+          <h1> Messages Api </h1>
+          <SortMessages setMessages={setMessages} messages={messages} />
+          <FilterMessages setMessages={setMessages} setFilterText={setFilterText} messages={messages} />
+          <MessageList messages={messages} filterText={text} />
+        </div>; 
+      }
+
+      ReactDOM.render(
+        <App/>,
+        document.getElementById('root')
+      );
+    </script>
+  </body>
+</html>

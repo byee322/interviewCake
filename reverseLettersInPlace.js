@@ -1,9 +1,18 @@
-const reverseInPlace = (letters) => {
+const reverseInPlace = (letters, blacklist) => {
   let rightIndex = letters.length -1
   let leftIndex = 0
 
   while(leftIndex < rightIndex){
-    const temp = letters[rightIndex]
+    let temp = letters[leftIndex]
+    if(blacklist.indexOf(temp) !== -1){
+      leftIndex++
+      temp = letters[leftIndex]
+    }
+
+    if(blacklist.indexOf(letters[rightIndex]) !== -1){
+      rightIndex--
+    }
+
     letters[leftIndex] = letters[rightIndex]
     letters[rightIndex] = temp
 
@@ -14,7 +23,7 @@ const reverseInPlace = (letters) => {
   return letters
 }
 
-console.log(reverseInPlace(["a","r","e","v","2"]))
+console.log(reverseInPlace(["a","r","e","v","2"], ["v"]))
 
 
 /// time complexity: o(n)
