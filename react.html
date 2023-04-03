@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hi im react</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script type="text/javascript">
+    import React from 'react'
+    import ReactDOM from 'react-dom'
+    import NestedComments from 'NestedComments'
+
+    const root = ReactDOM.createRoot(
+      document.getElementById('root')
+    );
+
+    root.render(
+      <StrictMode>
+        <NestedComments />
+      </StrictMode>
+    );
+
+    export default function NestedComments() {
+      const [comments, setComments] = useState("test");
+
+      useEffect(() => {
+        const fetchData = async () => {
+          let data = [
+            {
+              id: 1,
+              parentId: null,
+              text: "Hey i made a ridiculous hot comment"
+            },
+            {
+              id: 2,
+              parentId: 1,
+              text: "you are funny"
+            },
+            {
+              id: 3,
+              parentId: 1,
+              text: "you are hilarious"
+            },
+            {
+              id: 4,
+              parentId: 3,
+              text: "you hilarious x 2"
+            },
+            {
+              id: 5,
+              parentId: 4,
+              text: "you hilarious x 3!"
+            }
+          ];
+          let formattedComments = await formatComments(data);
+          await setComments(formattedComments);
+        };
+
+        fetchData();
+      }, []);
+
+      const formatComments = (commentsArr) => {
+        const tree = commentsArr.reduce((agg, current) => {
+          current["children"] = [];
+
+          if (current.parentId == null) {
+            agg = current;
+          } else {
+            agg = findParentCommment(current, agg, commentsArr);
+          }
+
+          return agg;
+        }, {});
+
+        debugger
+        console.log(tree);
+      };
+
+      const findParentCommment = (comment, agg, allComments) => {
+        debugger
+      };
+
+      return (
+        <div className="App">
+          {}
+        </div>
+      );
+    }
+
+  </script>
+</head>
+<body>
+  <div id="root" />
+</body>
+</html>
