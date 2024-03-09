@@ -98,6 +98,12 @@ const comments = [
         parent: 0,
         content: "Yeeeee",
         comments: []
+    },
+    {
+        id: 5822,
+        parent: 5821,
+        content: "Yeeeee 2",
+        comments: []
     }
 ];
 
@@ -120,47 +126,5 @@ const buildComments = (comments) => {
     })
     return ans
 }
-
-// const NO_PARENT = 0;
-// const ThreeD = [];
-
-// function recursive(comment) {
-//     const parentComment = comments.find((x) => x.id === comment.parent);
-//     if (parentComment) {
-//         parentComment.comments.push(comment);
-//     }
-//     return comment;
-// }
-
-// const buildComments = () => {
-//   const ans = []
-//   comments.forEach((comment) => {
-//       const things = recursive(comment);
-//       if (things.parent === NO_PARENT) {
-//           ans.push(things);
-//       }
-//   });
-//   return ans
-// }
-
-// const recursive = (comment) => {
-//   const parentComment = comments.find((x) => { return x.id == comment.parent})
-//   if(parentComment){
-//     parentComment.comments.push(comment)
-//   }
-//   return comment
-// }
-
-// const buildComments = (comments) => {
-//   const newComments = []
-
-//   comments.forEach((comment) => {
-//     let things = recursive(comment)
-//     if(things.parent == 0){
-//       newComments.push(things)
-//     }
-//   })
-//   return newComments
-// }
 
 console.log("buildComments:", buildComments(comments))
